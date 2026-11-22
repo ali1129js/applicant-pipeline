@@ -20,6 +20,7 @@ describe("Board", () => {
         strings={strings}
         filters={DEFAULT_FILTERS}
         onMove={() => undefined}
+        onOpen={() => undefined}
       />,
     );
     const board = screen.getByTestId("board");
@@ -43,6 +44,7 @@ describe("Board", () => {
         strings={strings}
         filters={DEFAULT_FILTERS}
         onMove={() => undefined}
+        onOpen={() => undefined}
       />,
     );
     const card = screen.getByRole("heading", { name: applicant.name }).closest("article");
@@ -64,6 +66,7 @@ describe("Board", () => {
         strings={strings}
         filters={DEFAULT_FILTERS}
         onMove={() => undefined}
+        onOpen={() => undefined}
       />,
     );
     const column = screen.getByTestId("board").querySelector('[data-stage="hired"]') as HTMLElement;

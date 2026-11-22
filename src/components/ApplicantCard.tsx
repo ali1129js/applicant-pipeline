@@ -8,9 +8,10 @@ interface Props {
   now: Date;
   strings: UIStrings;
   onMove: (id: string, to: Stage) => void;
+  onOpen: (id: string) => void;
 }
 
-export function ApplicantCard({ applicant, now, strings, onMove }: Props) {
+export function ApplicantCard({ applicant, now, strings, onMove, onOpen }: Props) {
   const days = daysInStage(applicant, now);
   const moveLabel = strings.moveTo(applicant.name);
   return (
@@ -23,6 +24,7 @@ export function ApplicantCard({ applicant, now, strings, onMove }: Props) {
         event.dataTransfer.setData(APPLICANT_DRAG_TYPE, applicant.id);
         event.dataTransfer.effectAllowed = "move";
       }}
+      onClick={() => onOpen(applicant.id)}
     >
       <h4 className="applicant-name">{applicant.name}</h4>
       <p className="applicant-role">{strings.roleLabel[applicant.roleId]}</p>
@@ -34,7 +36,17 @@ export function ApplicantCard({ applicant, now, strings, onMove }: Props) {
         </span>
         <span className="sr-only">{strings.rating(applicant.rating)}</span>
       </p>
-      <label className="move-field">
+      <button
+        type="button"
+        className="button button-small"
+        onClick={(event) => {
+          event.stopPropagation();
+          onOpen(applicant.id);
+        }}
+      >
+        {strings.viewProfile(applicant.name)}
+      </button>
+      <label className="move-field" onClick={(event) => event.stopPropagation()}>
         <span className="sr-only">{moveLabel}</span>
         <select
           aria-label={moveLabel}

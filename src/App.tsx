@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { Board } from "./components/Board";
 import { Toolbar } from "./components/Toolbar";
 import { ConfirmDialog } from "./components/ConfirmDialog";
+import { DetailDrawer } from "./components/DetailDrawer";
 import { ReasonDialog } from "./components/ReasonDialog";
-import { moveApplicant, type MoveError } from "./domain/moves";
+import { addNote, moveApplicant, removeNote, setRating, type MoveError } from "./domain/moves";
 import { generateApplicants } from "./domain/seed";
 import type { Applicant, Stage } from "./domain/schemas";
 import { useStoredState } from "./hooks/useStoredState";
@@ -57,6 +58,7 @@ export function App({ now = DEMO_TODAY, initialApplicants }: AppProps) {
   const [moveMessage, setMoveMessage] = useState<string | null>(null);
   const [pendingReject, setPendingReject] = useState<string | null>(null);
   const [confirmReset, setConfirmReset] = useState(false);
+  const [openId, setOpenId] = useState<string | null>(null);
   const [filters, setFilters] = useState<BoardFilters>(() => parseFilters(window.location.search));
 
   function updateFilters(next: BoardFilters) {
@@ -103,6 +105,7 @@ export function App({ now = DEMO_TODAY, initialApplicants }: AppProps) {
   }
 
   const pending = applicants.find((row) => row.id === pendingReject);
+  const openApplicant = applicants.find((row) => row.id === openId);
 
   return (
     <div className="app">
@@ -145,6 +148,7 @@ export function App({ now = DEMO_TODAY, initialApplicants }: AppProps) {
           strings={strings}
           filters={filters}
           onMove={applyMove}
+          onOpen={setOpenId}
         />
       </main>
       {confirmReset && (
@@ -159,6 +163,25 @@ export function App({ now = DEMO_TODAY, initialApplicants }: AppProps) {
             setConfirmReset(false);
             setMoveMessage(null);
             setPendingReject(null);
+            setOpenId(null);
+          }}
+        />
+      )}
+      {openApplicant && (
+        <DetailDrawer
+          applicant={openApplicant}
+          locale={locale}
+          strings={strings}
+          onClose={() => setOpenId(null)}
+          onAddNote={(body) => {
+            const next = addNote(openApplicant, body, now);
+            if (next) commit(replaceApplicant(applicants, next));
+          }}
+          onDeleteNote={(noteId) => {
+            commit(replaceApplicant(applicants, removeNote(openApplicant, noteId)));
+          }}
+          onSetRating={(rating) => {
+            commit(replaceApplicant(applicants, setRating(openApplicant, rating)));
           }}
         />
       )}

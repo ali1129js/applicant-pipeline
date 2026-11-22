@@ -46,6 +46,20 @@ export interface UIStrings {
   sortName: string;
   sortRating: string;
   sortDays: string;
+  viewProfile: (name: string) => string;
+  closeDrawer: string;
+  profileHeading: string;
+  emailLabel: string;
+  appliedLabel: string;
+  timelineHeading: string;
+  timelineEntered: (date: string) => string;
+  timelineExited: (date: string) => string;
+  notesHeading: string;
+  notesEmpty: string;
+  addNote: string;
+  notePlaceholder: string;
+  deleteNote: string;
+  ratingLabel: string;
 }
 
 export const COMPANY = "Demo Talent GmbH";
@@ -109,6 +123,20 @@ export const STRINGS: Record<LocaleName, UIStrings> = {
     sortName: "Name",
     sortRating: "Rating",
     sortDays: "Days in stage",
+    viewProfile: (name) => `View ${name}`,
+    closeDrawer: "Close details",
+    profileHeading: "Profile",
+    emailLabel: "Email",
+    appliedLabel: "Applied",
+    timelineHeading: "Stage history",
+    timelineEntered: (date) => `Entered ${date}`,
+    timelineExited: (date) => `Left ${date}`,
+    notesHeading: "Notes",
+    notesEmpty: "No notes yet.",
+    addNote: "Add note",
+    notePlaceholder: "Write a note",
+    deleteNote: "Delete note",
+    ratingLabel: "Rating",
   },
   de: {
     skipToContent: "Zum Inhalt springen",
@@ -168,5 +196,19 @@ export const STRINGS: Record<LocaleName, UIStrings> = {
     sortName: "Name",
     sortRating: "Bewertung",
     sortDays: "Tage in der Stufe",
+    viewProfile: (name) => `${name} ansehen`,
+    closeDrawer: "Details schliessen",
+    profileHeading: "Profil",
+    emailLabel: "E-Mail",
+    appliedLabel: "Eingegangen",
+    timelineHeading: "Stufenverlauf",
+    timelineEntered: (date) => `Eingetreten ${date}`,
+    timelineExited: (date) => `Verlassen ${date}`,
+    notesHeading: "Notizen",
+    notesEmpty: "Noch keine Notizen.",
+    addNote: "Notiz hinzufügen",
+    notePlaceholder: "Notiz schreiben",
+    deleteNote: "Notiz löschen",
+    ratingLabel: "Bewertung",
   },
 };

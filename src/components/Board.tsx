@@ -9,9 +9,10 @@ interface Props {
   strings: UIStrings;
   filters: BoardFilters;
   onMove: (id: string, to: Stage) => void;
+  onOpen: (id: string) => void;
 }
 
-export function Board({ applicants, now, strings, filters, onMove }: Props) {
+export function Board({ applicants, now, strings, filters, onMove, onOpen }: Props) {
   return (
     <div className="board" data-testid="board" role="region" aria-label={strings.boardHeading}>
       {STAGES.map((stage) => (
@@ -22,6 +23,7 @@ export function Board({ applicants, now, strings, filters, onMove }: Props) {
           now={now}
           strings={strings}
           onMove={onMove}
+          onOpen={onOpen}
         />
       ))}
     </div>

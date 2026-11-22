@@ -10,9 +10,10 @@ interface Props {
   now: Date;
   strings: UIStrings;
   onMove: (id: string, to: Stage) => void;
+  onOpen: (id: string) => void;
 }
 
-export function Column({ stage, applicants, now, strings, onMove }: Props) {
+export function Column({ stage, applicants, now, strings, onMove, onOpen }: Props) {
   const headingId = `stage-${stage}`;
   const label = strings.stageLabel[stage];
 
@@ -45,7 +46,13 @@ export function Column({ stage, applicants, now, strings, onMove }: Props) {
         <ul className="column-cards">
           {applicants.map((applicant) => (
             <li key={applicant.id}>
-              <ApplicantCard applicant={applicant} now={now} strings={strings} onMove={onMove} />
+              <ApplicantCard
+                applicant={applicant}
+                now={now}
+                strings={strings}
+                onMove={onMove}
+                onOpen={onOpen}
+              />
             </li>
           ))}
         </ul>

@@ -41,7 +41,9 @@ describe("filter and sort", () => {
     const otherRole =
       sample.roleId === "frontend-engineer" ? "backend-engineer" : "frontend-engineer";
     expect(matchesFilters(sample, { ...DEFAULT_FILTERS, roleId: otherRole })).toBe(false);
-    expect(matchesFilters(sample, { ...DEFAULT_FILTERS, rating: sample.rating as 1 | 2 | 3 | 4 | 5 })).toBe(true);
+    expect(
+      matchesFilters(sample, { ...DEFAULT_FILTERS, rating: sample.rating as 1 | 2 | 3 | 4 | 5 }),
+    ).toBe(true);
     const otherRating = (sample.rating === 5 ? 1 : 5) as 1 | 2 | 3 | 4 | 5;
     expect(matchesFilters(sample, { ...DEFAULT_FILTERS, rating: otherRating })).toBe(false);
   });
