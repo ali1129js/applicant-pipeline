@@ -478,3 +478,9 @@ textarea {
 .stats-muted {
   color: var(--text-muted);
 }
+
+.graphql-note {
+  margin: 1rem 0 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}

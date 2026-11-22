@@ -69,6 +69,7 @@ export interface UIStrings {
   statsMedianDays: (days: number) => string;
   statsNoMedian: string;
   statsTotal: (count: number) => string;
+  graphqlNote: string;
 }
 
 export const COMPANY = "Demo Talent GmbH";
@@ -155,6 +156,7 @@ export const STRINGS: Record<LocaleName, UIStrings> = {
     statsMedianDays: (days) => (days === 1 ? "1 day" : `${days} days`),
     statsNoMedian: "No samples yet",
     statsTotal: (count) => (count === 1 ? "1 applicant in total" : `${count} applicants in total`),
+    graphqlNote: "Board updates run through an in-browser GraphQL schema. There is no server.",
   },
   de: {
     skipToContent: "Zum Inhalt springen",
@@ -237,5 +239,6 @@ export const STRINGS: Record<LocaleName, UIStrings> = {
     statsMedianDays: (days) => (days === 1 ? "1 Tag" : `${days} Tage`),
     statsNoMedian: "Noch keine Werte",
     statsTotal: (count) => (count === 1 ? "1 Bewerbung insgesamt" : `${count} Bewerbungen insgesamt`),
+    graphqlNote: "Board-Änderungen laufen über ein GraphQL-Schema im Browser. Es gibt keinen Server.",
   },
 };

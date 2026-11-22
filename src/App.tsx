@@ -5,7 +5,8 @@ import { Toolbar } from "./components/Toolbar";
 import { ConfirmDialog } from "./components/ConfirmDialog";
 import { DetailDrawer } from "./components/DetailDrawer";
 import { ReasonDialog } from "./components/ReasonDialog";
-import { addNote, moveApplicant, removeNote, setRating, type MoveError } from "./domain/moves";
+import { type MoveError } from "./domain/moves";
+import { runGraphql } from "./graphql/execute";
 import { generateApplicants } from "./domain/seed";
 import type { Applicant, Stage } from "./domain/schemas";
 import { useStoredState } from "./hooks/useStoredState";
@@ -32,10 +33,6 @@ import { applyMotion, applyTheme, prefersReducedMotion } from "./theme/themes";
 interface AppProps {
   now?: Date;
   initialApplicants?: Applicant[];
-}
-
-function replaceApplicant(list: readonly Applicant[], next: Applicant): Applicant[] {
-  return list.map((row) => (row.id === next.id ? next : row));
 }
 
 export function App({ now = DEMO_TODAY, initialApplicants }: AppProps) {
@@ -83,24 +80,37 @@ export function App({ now = DEMO_TODAY, initialApplicants }: AppProps) {
     document.title = strings.documentTitle;
   }, [locale, strings.documentTitle]);
 
+  function operate<T>(source: string, variableValues?: Record<string, unknown>) {
+    return runGraphql<T>(source, { applicants, now }, variableValues);
+  }
+
   function applyMove(id: string, to: Stage, reason?: string) {
-    const current = applicants.find((row) => row.id === id);
-    if (!current) return;
-    const result = moveApplicant(
-      current,
-      reason === undefined ? { to, at: now } : { to, at: now, reason },
+    const result = operate<{ moveApplicant: { ok: boolean; error: string | null } }>(
+      `mutation ($id: ID!, $to: Stage!, $reason: String) {
+        moveApplicant(id: $id, to: $to, reason: $reason) { ok error }
+      }`,
+      reason === undefined ? { id, to } : { id, to, reason },
     );
-    if (!result.ok) {
-      if (result.error === "rejected-needs-reason") {
+    if (result.errors?.length) {
+      setMoveMessage(result.errors[0]?.message ?? "GraphQL error");
+      return;
+    }
+    const payload = result.data?.moveApplicant;
+    if (!payload?.ok) {
+      if (payload?.error === "rejected-needs-reason") {
         setPendingReject(id);
         setMoveMessage(null);
         return;
       }
-      const error: MoveError = result.error;
-      setMoveMessage(strings.moveError[error]);
+      if (payload?.error === "hired-is-terminal" || payload?.error === "already-there") {
+        const error: MoveError = payload.error;
+        setMoveMessage(strings.moveError[error]);
+        return;
+      }
+      setMoveMessage(payload?.error ?? strings.moveError["already-there"]);
       return;
     }
-    commit(replaceApplicant(applicants, result.applicant));
+    commit(result.applicants);
     setMoveMessage(null);
     setPendingReject(null);
   }
@@ -152,6 +162,7 @@ export function App({ now = DEMO_TODAY, initialApplicants }: AppProps) {
           onMove={applyMove}
           onOpen={setOpenId}
         />
+        <p className="graphql-note">{strings.graphqlNote}</p>
       </main>
       {confirmReset && (
         <ConfirmDialog
@@ -161,7 +172,8 @@ export function App({ now = DEMO_TODAY, initialApplicants }: AppProps) {
           cancelLabel={strings.resetCancel}
           onCancel={() => setConfirmReset(false)}
           onConfirm={() => {
-            commit(seedBoard());
+            const result = operate<{ resetBoard: { id: string }[] }>("mutation { resetBoard { id } }");
+            if (!result.errors) commit(result.applicants);
             setConfirmReset(false);
             setMoveMessage(null);
             setPendingReject(null);
@@ -176,14 +188,25 @@ export function App({ now = DEMO_TODAY, initialApplicants }: AppProps) {
           strings={strings}
           onClose={() => setOpenId(null)}
           onAddNote={(body) => {
-            const next = addNote(openApplicant, body, now);
-            if (next) commit(replaceApplicant(applicants, next));
+            const result = operate(
+              `mutation ($id: ID!, $body: String!) { addNote(id: $id, body: $body) { id } }`,
+              { id: openApplicant.id, body },
+            );
+            if (!result.errors) commit(result.applicants);
           }}
           onDeleteNote={(noteId) => {
-            commit(replaceApplicant(applicants, removeNote(openApplicant, noteId)));
+            const result = operate(
+              `mutation ($id: ID!, $noteId: ID!) { removeNote(id: $id, noteId: $noteId) { id } }`,
+              { id: openApplicant.id, noteId },
+            );
+            if (!result.errors) commit(result.applicants);
           }}
           onSetRating={(rating) => {
-            commit(replaceApplicant(applicants, setRating(openApplicant, rating)));
+            const result = operate(
+              `mutation ($id: ID!, $rating: Int!) { setRating(id: $id, rating: $rating) { id } }`,
+              { id: openApplicant.id, rating },
+            );
+            if (!result.errors) commit(result.applicants);
           }}
         />
       )}
