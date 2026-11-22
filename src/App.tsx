@@ -1,5 +1,8 @@
-import { useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { Board } from "./components/Board";
+import { generateApplicants } from "./domain/seed";
 import { useStoredState } from "./hooks/useStoredState";
+import { DEMO_TODAY } from "./lib/demo";
 import { STRINGS } from "./lib/i18n";
 import {
   KEYS,
@@ -16,7 +19,11 @@ import { MotionToggle } from "./theme/MotionToggle";
 import { ThemeSwitcher } from "./theme/ThemeSwitcher";
 import { applyMotion, applyTheme, prefersReducedMotion } from "./theme/themes";
 
-export function App() {
+interface AppProps {
+  now?: Date;
+}
+
+export function App({ now = DEMO_TODAY }: AppProps) {
   const [theme, setTheme] = useStoredState<ThemeName>(KEYS.theme, themeSchema, defaultTheme());
   const [motion, setMotion] = useStoredState<MotionName>(
     KEYS.motion,
@@ -30,6 +37,8 @@ export function App() {
   );
   const reducedMotion = prefersReducedMotion();
   const strings = STRINGS[locale];
+  const [applicants] = useState(() => generateApplicants({ referenceDate: DEMO_TODAY }));
+  const boardApplicants = useMemo(() => applicants, [applicants]);
 
   useEffect(() => applyTheme(theme), [theme]);
   useEffect(
@@ -65,11 +74,9 @@ export function App() {
         </div>
       </header>
       <main id="main" className="app-main" tabIndex={-1}>
-        <section className="panel" aria-labelledby="intro-h">
-          <h2 id="intro-h">{strings.comingSoonHeading}</h2>
-          <p>{strings.comingSoonBody}</p>
-          <p>{strings.fictionalNote}</p>
-        </section>
+        <p className="board-note">{strings.fictionalNote}</p>
+        <h2 className="board-heading">{strings.boardHeading}</h2>
+        <Board applicants={boardApplicants} now={now} strings={strings} />
       </main>
     </div>
   );

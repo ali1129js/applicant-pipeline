@@ -1,3 +1,4 @@
+import type { RoleId, Stage } from "../domain/schemas";
 import type { LocaleName, ThemeName } from "./types";
 
 export interface UIStrings {
@@ -13,9 +14,13 @@ export interface UIStrings {
   themeLabel: Record<ThemeName, string>;
   animatedBackground: string;
   animatedBackgroundReduced: string;
-  comingSoonHeading: string;
-  comingSoonBody: string;
+  boardHeading: string;
   fictionalNote: string;
+  emptyColumn: string;
+  daysInStage: (days: number) => string;
+  rating: (value: number) => string;
+  stageLabel: Record<Stage, string>;
+  roleLabel: Record<RoleId, string>;
 }
 
 export const COMPANY = "Demo Talent GmbH";
@@ -34,10 +39,25 @@ export const STRINGS: Record<LocaleName, UIStrings> = {
     themeLabel: { khaki: "Khaki", graphite: "Graphite", midnight: "Midnight" },
     animatedBackground: "Animated background",
     animatedBackgroundReduced: "Animated background (reduced motion is on)",
-    comingSoonHeading: "The board is next",
-    comingSoonBody:
-      "This is the app shell: themes, motion and language. The pipeline board, with stages from Applied to Hired, will land in the following updates.",
+    boardHeading: "Hiring pipeline",
     fictionalNote: "All names and roles are made up for this demo.",
+    emptyColumn: "No applicants in this stage.",
+    daysInStage: (days) => (days === 1 ? "1 day in stage" : `${days} days in stage`),
+    rating: (value) => `Rating ${value} of 5`,
+    stageLabel: {
+      applied: "Applied",
+      screening: "Screening",
+      interview: "Interview",
+      offer: "Offer",
+      hired: "Hired",
+      rejected: "Rejected",
+    },
+    roleLabel: {
+      "frontend-engineer": "Frontend Engineer",
+      "backend-engineer": "Backend Engineer",
+      "product-designer": "Product Designer",
+      "customer-success": "Customer Success",
+    },
   },
   de: {
     skipToContent: "Zum Inhalt springen",
@@ -52,9 +72,24 @@ export const STRINGS: Record<LocaleName, UIStrings> = {
     themeLabel: { khaki: "Khaki", graphite: "Graphit", midnight: "Mitternacht" },
     animatedBackground: "Animierter Hintergrund",
     animatedBackgroundReduced: "Animierter Hintergrund (reduzierte Bewegung ist aktiv)",
-    comingSoonHeading: "Als Nächstes kommt das Board",
-    comingSoonBody:
-      "Das ist die App-Hülle: Themes, Bewegung und Sprache. Das Pipeline-Board mit den Stufen von Eingegangen bis Eingestellt folgt in den nächsten Schritten.",
+    boardHeading: "Einstellungspipeline",
     fictionalNote: "Alle Namen und Rollen in dieser Demo sind erfunden.",
+    emptyColumn: "Keine Bewerbungen in dieser Stufe.",
+    daysInStage: (days) => (days === 1 ? "1 Tag in der Stufe" : `${days} Tage in der Stufe`),
+    rating: (value) => `Bewertung ${value} von 5`,
+    stageLabel: {
+      applied: "Eingegangen",
+      screening: "Prüfung",
+      interview: "Gespräch",
+      offer: "Angebot",
+      hired: "Eingestellt",
+      rejected: "Abgelehnt",
+    },
+    roleLabel: {
+      "frontend-engineer": "Frontend-Ingenieur",
+      "backend-engineer": "Backend-Ingenieur",
+      "product-designer": "Produktdesigner",
+      "customer-success": "Customer Success",
+    },
   },
 };
