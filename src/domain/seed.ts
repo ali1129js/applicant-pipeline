@@ -133,11 +133,18 @@ export function generateApplicants(options: SeedOptions = {}): Applicant[] {
   const reference = options.referenceDate ?? new Date("2026-11-22T12:00:00.000Z");
   const rng = createRng(seed);
   const out: Applicant[] = [];
+  const usedNames = new Set<string>();
 
   for (let i = 0; i < count; i += 1) {
     const first = pick(rng, FIRST_NAMES);
     const last = pick(rng, LAST_NAMES);
-    const name = `${first} ${last}`;
+    let name = `${first} ${last}`;
+    let suffix = 2;
+    while (usedNames.has(name)) {
+      name = `${first} ${last} ${suffix}`;
+      suffix += 1;
+    }
+    usedNames.add(name);
     const email = `${first.toLowerCase()}.${last.toLowerCase().replace(/[^a-z]/g, "")}${i}@example.com`;
     const roleId = ROLES[i % ROLES.length]?.id as RoleId;
     const stage = pickStage(rng);

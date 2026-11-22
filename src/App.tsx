@@ -1,6 +1,9 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Board } from "./components/Board";
+import { ReasonDialog } from "./components/ReasonDialog";
+import { moveApplicant, type MoveError } from "./domain/moves";
 import { generateApplicants } from "./domain/seed";
+import type { Applicant, Stage } from "./domain/schemas";
 import { useStoredState } from "./hooks/useStoredState";
 import { DEMO_TODAY } from "./lib/demo";
 import { STRINGS } from "./lib/i18n";
@@ -21,9 +24,14 @@ import { applyMotion, applyTheme, prefersReducedMotion } from "./theme/themes";
 
 interface AppProps {
   now?: Date;
+  initialApplicants?: Applicant[];
 }
 
-export function App({ now = DEMO_TODAY }: AppProps) {
+function replaceApplicant(list: readonly Applicant[], next: Applicant): Applicant[] {
+  return list.map((row) => (row.id === next.id ? next : row));
+}
+
+export function App({ now = DEMO_TODAY, initialApplicants }: AppProps) {
   const [theme, setTheme] = useStoredState<ThemeName>(KEYS.theme, themeSchema, defaultTheme());
   const [motion, setMotion] = useStoredState<MotionName>(
     KEYS.motion,
@@ -37,8 +45,11 @@ export function App({ now = DEMO_TODAY }: AppProps) {
   );
   const reducedMotion = prefersReducedMotion();
   const strings = STRINGS[locale];
-  const [applicants] = useState(() => generateApplicants({ referenceDate: DEMO_TODAY }));
-  const boardApplicants = useMemo(() => applicants, [applicants]);
+  const [applicants, setApplicants] = useState<Applicant[]>(
+    () => initialApplicants ?? generateApplicants({ referenceDate: DEMO_TODAY }),
+  );
+  const [moveMessage, setMoveMessage] = useState<string | null>(null);
+  const [pendingReject, setPendingReject] = useState<string | null>(null);
 
   useEffect(() => applyTheme(theme), [theme]);
   useEffect(
@@ -49,6 +60,27 @@ export function App({ now = DEMO_TODAY }: AppProps) {
     document.documentElement.lang = locale;
     document.title = strings.documentTitle;
   }, [locale, strings.documentTitle]);
+
+  function applyMove(id: string, to: Stage, reason?: string) {
+    const current = applicants.find((row) => row.id === id);
+    if (!current) return;
+    const result = moveApplicant(current, reason === undefined ? { to, at: now } : { to, at: now, reason });
+    if (!result.ok) {
+      if (result.error === "rejected-needs-reason") {
+        setPendingReject(id);
+        setMoveMessage(null);
+        return;
+      }
+      const error: MoveError = result.error;
+      setMoveMessage(strings.moveError[error]);
+      return;
+    }
+    setApplicants((list) => replaceApplicant(list, result.applicant));
+    setMoveMessage(null);
+    setPendingReject(null);
+  }
+
+  const pending = applicants.find((row) => row.id === pendingReject);
 
   return (
     <div className="app">
@@ -76,8 +108,21 @@ export function App({ now = DEMO_TODAY }: AppProps) {
       <main id="main" className="app-main" tabIndex={-1}>
         <p className="board-note">{strings.fictionalNote}</p>
         <h2 className="board-heading">{strings.boardHeading}</h2>
-        <Board applicants={boardApplicants} now={now} strings={strings} />
+        {moveMessage && (
+          <p role="alert" className="move-alert">
+            {moveMessage}
+          </p>
+        )}
+        <Board applicants={applicants} now={now} strings={strings} onMove={applyMove} />
       </main>
+      {pending && (
+        <ReasonDialog
+          name={pending.name}
+          strings={strings}
+          onCancel={() => setPendingReject(null)}
+          onConfirm={(reason) => applyMove(pending.id, "rejected", reason)}
+        />
+      )}
     </div>
   );
 }

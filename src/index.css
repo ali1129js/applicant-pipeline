@@ -238,3 +238,80 @@ textarea {
 .applicant-rating {
   letter-spacing: 0.06em;
 }
+
+.move-field {
+  display: block;
+  margin-top: 0.55rem;
+}
+.move-field select {
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.3rem 0.5rem;
+  border: 2px solid var(--control-border);
+  border-radius: 0.5rem;
+  background: var(--surface);
+}
+
+.move-alert {
+  margin: 0 0 0.75rem;
+  padding: 0.6rem 0.8rem;
+  border: 2px solid var(--danger-text);
+  border-radius: 0.6rem;
+  color: var(--danger-text);
+  background: var(--surface);
+}
+
+.dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgb(0 0 0 / 0.45);
+  display: grid;
+  place-items: center;
+  z-index: 20;
+  padding: 1rem;
+}
+.dialog {
+  width: min(28rem, 100%);
+  background: var(--surface);
+  color: var(--text);
+  border: 2px solid var(--control-border);
+  border-radius: 0.85rem;
+  padding: 1.1rem 1.2rem 1.2rem;
+  box-shadow: var(--shadow-card);
+}
+.dialog h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.15rem;
+}
+.dialog label {
+  display: block;
+  margin: 0.6rem 0 0.25rem;
+}
+.dialog input {
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.35rem 0.6rem;
+  border: 2px solid var(--control-border);
+  border-radius: 0.5rem;
+  background: var(--bg);
+}
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 0.9rem;
+}
+.button {
+  min-height: 2.75rem;
+  padding: 0.35rem 0.9rem;
+  border: 2px solid var(--control-border);
+  border-radius: 0.6rem;
+  background: var(--surface);
+  cursor: pointer;
+}
+.button-danger {
+  background-color: var(--garnet);
+  background-image: linear-gradient(to bottom, var(--garnet-from), var(--garnet-to));
+  color: var(--on-garnet);
+  border-color: var(--garnet-to);
+}

@@ -21,6 +21,17 @@ export interface UIStrings {
   rating: (value: number) => string;
   stageLabel: Record<Stage, string>;
   roleLabel: Record<RoleId, string>;
+  moveTo: (name: string) => string;
+  moveError: {
+    "already-there": string;
+    "rejected-needs-reason": string;
+    "hired-is-terminal": string;
+  };
+  rejectTitle: string;
+  rejectBody: (name: string) => string;
+  rejectReasonLabel: string;
+  rejectConfirm: string;
+  rejectCancel: string;
 }
 
 export const COMPANY = "Demo Talent GmbH";
@@ -58,6 +69,17 @@ export const STRINGS: Record<LocaleName, UIStrings> = {
       "product-designer": "Product Designer",
       "customer-success": "Customer Success",
     },
+    moveTo: (name) => `Move ${name}`,
+    moveError: {
+      "already-there": "This applicant is already in that stage.",
+      "rejected-needs-reason": "Moving to Rejected needs a reason.",
+      "hired-is-terminal": "Hired applicants cannot be moved.",
+    },
+    rejectTitle: "Reason for rejection",
+    rejectBody: (name) => `Please give a reason for rejecting ${name}.`,
+    rejectReasonLabel: "Reason",
+    rejectConfirm: "Reject",
+    rejectCancel: "Cancel",
   },
   de: {
     skipToContent: "Zum Inhalt springen",
@@ -91,5 +113,16 @@ export const STRINGS: Record<LocaleName, UIStrings> = {
       "product-designer": "Produktdesigner",
       "customer-success": "Customer Success",
     },
+    moveTo: (name) => `${name} verschieben`,
+    moveError: {
+      "already-there": "Diese Bewerbung ist bereits in dieser Stufe.",
+      "rejected-needs-reason": "Für eine Ablehnung ist ein Grund nötig.",
+      "hired-is-terminal": "Eingestellte Personen können nicht verschoben werden.",
+    },
+    rejectTitle: "Grund der Ablehnung",
+    rejectBody: (name) => `Bitte einen Grund angeben, warum ${name} abgelehnt wird.`,
+    rejectReasonLabel: "Grund",
+    rejectConfirm: "Ablehnen",
+    rejectCancel: "Abbrechen",
   },
 };

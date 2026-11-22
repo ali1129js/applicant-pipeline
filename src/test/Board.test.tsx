@@ -12,7 +12,7 @@ const all = generateApplicants({ referenceDate: DEMO_TODAY });
 
 describe("Board", () => {
   it("renders a column per stage with a count in the header", () => {
-    render(<Board applicants={all} now={DEMO_TODAY} strings={strings} />);
+    render(<Board applicants={all} now={DEMO_TODAY} strings={strings} onMove={() => undefined} />);
     const board = screen.getByTestId("board");
     for (const stage of STAGES) {
       const column = board.querySelector(`[data-stage="${stage}"]`) as HTMLElement;
@@ -27,7 +27,7 @@ describe("Board", () => {
   it("shows name, role, days in stage and rating on a card", () => {
     const applicant = all[0];
     if (!applicant) throw new Error("seed is empty");
-    render(<Board applicants={all} now={DEMO_TODAY} strings={strings} />);
+    render(<Board applicants={all} now={DEMO_TODAY} strings={strings} onMove={() => undefined} />);
     const card = screen.getByRole("heading", { name: applicant.name }).closest("article");
     expect(card).not.toBeNull();
     const body = card as HTMLElement;
@@ -40,7 +40,14 @@ describe("Board", () => {
 
   it("shows an empty state when a column has no applicants", () => {
     const withoutHired = all.filter((row: Applicant) => row.stage !== "hired");
-    render(<Board applicants={withoutHired} now={DEMO_TODAY} strings={strings} />);
+    render(
+      <Board
+        applicants={withoutHired}
+        now={DEMO_TODAY}
+        strings={strings}
+        onMove={() => undefined}
+      />,
+    );
     const column = screen.getByTestId("board").querySelector('[data-stage="hired"]') as HTMLElement;
     expect(within(column).getByText(strings.emptyColumn)).toBeInTheDocument();
     expect(within(column).getByRole("heading", { level: 3 })).toHaveTextContent("Hired (0)");
