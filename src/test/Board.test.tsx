@@ -5,6 +5,7 @@ import { generateApplicants } from "../domain/seed";
 import { STAGES, type Applicant } from "../domain/schemas";
 import { daysInStage } from "../domain/moves";
 import { DEMO_TODAY } from "../lib/demo";
+import { DEFAULT_FILTERS } from "../lib/filters";
 import { STRINGS } from "../lib/i18n";
 
 const strings = STRINGS.en;
@@ -12,7 +13,15 @@ const all = generateApplicants({ referenceDate: DEMO_TODAY });
 
 describe("Board", () => {
   it("renders a column per stage with a count in the header", () => {
-    render(<Board applicants={all} now={DEMO_TODAY} strings={strings} onMove={() => undefined} />);
+    render(
+      <Board
+        applicants={all}
+        now={DEMO_TODAY}
+        strings={strings}
+        filters={DEFAULT_FILTERS}
+        onMove={() => undefined}
+      />,
+    );
     const board = screen.getByTestId("board");
     for (const stage of STAGES) {
       const column = board.querySelector(`[data-stage="${stage}"]`) as HTMLElement;
@@ -27,7 +36,15 @@ describe("Board", () => {
   it("shows name, role, days in stage and rating on a card", () => {
     const applicant = all[0];
     if (!applicant) throw new Error("seed is empty");
-    render(<Board applicants={all} now={DEMO_TODAY} strings={strings} onMove={() => undefined} />);
+    render(
+      <Board
+        applicants={all}
+        now={DEMO_TODAY}
+        strings={strings}
+        filters={DEFAULT_FILTERS}
+        onMove={() => undefined}
+      />,
+    );
     const card = screen.getByRole("heading", { name: applicant.name }).closest("article");
     expect(card).not.toBeNull();
     const body = card as HTMLElement;
@@ -45,6 +62,7 @@ describe("Board", () => {
         applicants={withoutHired}
         now={DEMO_TODAY}
         strings={strings}
+        filters={DEFAULT_FILTERS}
         onMove={() => undefined}
       />,
     );

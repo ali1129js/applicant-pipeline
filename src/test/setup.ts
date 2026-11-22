@@ -9,6 +9,7 @@ afterEach(() => {
   document.documentElement.removeAttribute("data-motion");
   document.documentElement.removeAttribute("style");
   document.documentElement.lang = "en";
+  window.history.replaceState(null, "", "/");
 });
 
 if (!window.matchMedia) {

@@ -37,6 +37,15 @@ export interface UIStrings {
   resetBody: string;
   resetConfirm: string;
   resetCancel: string;
+  search: string;
+  searchPlaceholder: string;
+  filterRole: string;
+  filterRating: string;
+  filterAll: string;
+  sortBy: string;
+  sortName: string;
+  sortRating: string;
+  sortDays: string;
 }
 
 export const COMPANY = "Demo Talent GmbH";
@@ -91,6 +100,15 @@ export const STRINGS: Record<LocaleName, UIStrings> = {
       "This replaces the current board with the original seeded applicants. It cannot be undone.",
     resetConfirm: "Reset",
     resetCancel: "Cancel",
+    search: "Search",
+    searchPlaceholder: "Search by name",
+    filterRole: "Role",
+    filterRating: "Rating",
+    filterAll: "All",
+    sortBy: "Sort",
+    sortName: "Name",
+    sortRating: "Rating",
+    sortDays: "Days in stage",
   },
   de: {
     skipToContent: "Zum Inhalt springen",
@@ -141,5 +159,14 @@ export const STRINGS: Record<LocaleName, UIStrings> = {
       "Das aktuelle Board wird durch die ursprünglichen Demodaten ersetzt. Das lässt sich nicht rückgängig machen.",
     resetConfirm: "Zurücksetzen",
     resetCancel: "Abbrechen",
+    search: "Suche",
+    searchPlaceholder: "Nach Namen suchen",
+    filterRole: "Rolle",
+    filterRating: "Bewertung",
+    filterAll: "Alle",
+    sortBy: "Sortierung",
+    sortName: "Name",
+    sortRating: "Bewertung",
+    sortDays: "Tage in der Stufe",
   },
 };

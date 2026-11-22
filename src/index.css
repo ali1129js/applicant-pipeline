@@ -315,3 +315,31 @@ textarea {
   color: var(--on-garnet);
   border-color: var(--garnet-to);
 }
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: end;
+  margin: 0 0 0.9rem;
+}
+.toolbar-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+.toolbar-field input,
+.toolbar-field select {
+  min-height: 2.75rem;
+  padding: 0.35rem 0.6rem;
+  border: 2px solid var(--control-border);
+  border-radius: 0.5rem;
+  background: var(--surface);
+  color: var(--text);
+}
+.toolbar-search {
+  flex: 1 1 14rem;
+  min-width: 0;
+}

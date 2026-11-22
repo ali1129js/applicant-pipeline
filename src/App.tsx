@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Board } from "./components/Board";
+import { Toolbar } from "./components/Toolbar";
 import { ConfirmDialog } from "./components/ConfirmDialog";
 import { ReasonDialog } from "./components/ReasonDialog";
 import { moveApplicant, type MoveError } from "./domain/moves";
@@ -7,6 +8,7 @@ import { generateApplicants } from "./domain/seed";
 import type { Applicant, Stage } from "./domain/schemas";
 import { useStoredState } from "./hooks/useStoredState";
 import { DEMO_TODAY } from "./lib/demo";
+import { parseFilters, serializeFilters, type BoardFilters } from "./lib/filters";
 import { STRINGS } from "./lib/i18n";
 import {
   KEYS,
@@ -55,6 +57,13 @@ export function App({ now = DEMO_TODAY, initialApplicants }: AppProps) {
   const [moveMessage, setMoveMessage] = useState<string | null>(null);
   const [pendingReject, setPendingReject] = useState<string | null>(null);
   const [confirmReset, setConfirmReset] = useState(false);
+  const [filters, setFilters] = useState<BoardFilters>(() => parseFilters(window.location.search));
+
+  function updateFilters(next: BoardFilters) {
+    setFilters(next);
+    const path = `${window.location.pathname}${serializeFilters(next)}${window.location.hash}`;
+    window.history.replaceState(null, "", path);
+  }
 
   function commit(next: Applicant[]) {
     setApplicants(next);
@@ -124,12 +133,19 @@ export function App({ now = DEMO_TODAY, initialApplicants }: AppProps) {
       <main id="main" className="app-main" tabIndex={-1}>
         <p className="board-note">{strings.fictionalNote}</p>
         <h2 className="board-heading">{strings.boardHeading}</h2>
+        <Toolbar filters={filters} onChange={updateFilters} strings={strings} />
         {moveMessage && (
           <p role="alert" className="move-alert">
             {moveMessage}
           </p>
         )}
-        <Board applicants={applicants} now={now} strings={strings} onMove={applyMove} />
+        <Board
+          applicants={applicants}
+          now={now}
+          strings={strings}
+          filters={filters}
+          onMove={applyMove}
+        />
       </main>
       {confirmReset && (
         <ConfirmDialog
