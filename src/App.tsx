@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Board } from "./components/Board";
+import { StatsStrip } from "./components/StatsStrip";
 import { Toolbar } from "./components/Toolbar";
 import { ConfirmDialog } from "./components/ConfirmDialog";
 import { DetailDrawer } from "./components/DetailDrawer";
@@ -135,6 +136,7 @@ export function App({ now = DEMO_TODAY, initialApplicants }: AppProps) {
       </header>
       <main id="main" className="app-main" tabIndex={-1}>
         <p className="board-note">{strings.fictionalNote}</p>
+        <StatsStrip applicants={applicants} now={now} strings={strings} />
         <h2 className="board-heading">{strings.boardHeading}</h2>
         <Toolbar filters={filters} onChange={updateFilters} strings={strings} />
         {moveMessage && (

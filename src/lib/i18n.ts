@@ -60,6 +60,15 @@ export interface UIStrings {
   notePlaceholder: string;
   deleteNote: string;
   ratingLabel: string;
+  statsHeading: string;
+  statsConversion: string;
+  statsMedian: string;
+  statsRoles: string;
+  statsReached: (count: number) => string;
+  statsConversionOf: (pct: number) => string;
+  statsMedianDays: (days: number) => string;
+  statsNoMedian: string;
+  statsTotal: (count: number) => string;
 }
 
 export const COMPANY = "Demo Talent GmbH";
@@ -137,6 +146,15 @@ export const STRINGS: Record<LocaleName, UIStrings> = {
     notePlaceholder: "Write a note",
     deleteNote: "Delete note",
     ratingLabel: "Rating",
+    statsHeading: "Pipeline stats",
+    statsConversion: "Conversion",
+    statsMedian: "Median days in stage",
+    statsRoles: "Applicants by role",
+    statsReached: (count) => (count === 1 ? "1 reached" : `${count} reached`),
+    statsConversionOf: (pct) => `${pct}% of previous stage`,
+    statsMedianDays: (days) => (days === 1 ? "1 day" : `${days} days`),
+    statsNoMedian: "No samples yet",
+    statsTotal: (count) => (count === 1 ? "1 applicant in total" : `${count} applicants in total`),
   },
   de: {
     skipToContent: "Zum Inhalt springen",
@@ -210,5 +228,14 @@ export const STRINGS: Record<LocaleName, UIStrings> = {
     notePlaceholder: "Notiz schreiben",
     deleteNote: "Notiz löschen",
     ratingLabel: "Bewertung",
+    statsHeading: "Pipeline-Kennzahlen",
+    statsConversion: "Conversion",
+    statsMedian: "Median der Tage in der Stufe",
+    statsRoles: "Bewerbungen nach Rolle",
+    statsReached: (count) => (count === 1 ? "1 erreicht" : `${count} erreicht`),
+    statsConversionOf: (pct) => `${pct}% der vorherigen Stufe`,
+    statsMedianDays: (days) => (days === 1 ? "1 Tag" : `${days} Tage`),
+    statsNoMedian: "Noch keine Werte",
+    statsTotal: (count) => (count === 1 ? "1 Bewerbung insgesamt" : `${count} Bewerbungen insgesamt`),
   },
 };

@@ -20,3 +20,12 @@ export {
 } from "./moves";
 export type { MoveError, MoveOptions, MoveResult } from "./moves";
 export { APPLICANT_COUNT, SEED, createRng, generateApplicants } from "./seed";
+export {
+  FUNNEL_STAGES,
+  conversionByStage,
+  countByRole,
+  median,
+  medianDaysByStage,
+  pipelineStats,
+} from "./stats";
+export type { FunnelStage, PipelineStats, RoleCount, StageConversion, StageMedian } from "./stats";
