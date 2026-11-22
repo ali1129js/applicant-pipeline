@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Board } from "./components/Board";
+import { ConfirmDialog } from "./components/ConfirmDialog";
 import { ReasonDialog } from "./components/ReasonDialog";
 import { moveApplicant, type MoveError } from "./domain/moves";
 import { generateApplicants } from "./domain/seed";
@@ -14,7 +15,9 @@ import {
   defaultTheme,
   localeSchema,
   motionSchema,
+  readBoard,
   themeSchema,
+  writeBoard,
 } from "./lib/storage";
 import type { LocaleName, MotionName, ThemeName } from "./lib/types";
 import { LocaleToggle } from "./theme/LocaleToggle";
@@ -45,11 +48,18 @@ export function App({ now = DEMO_TODAY, initialApplicants }: AppProps) {
   );
   const reducedMotion = prefersReducedMotion();
   const strings = STRINGS[locale];
+  const seedBoard = () => generateApplicants({ referenceDate: DEMO_TODAY });
   const [applicants, setApplicants] = useState<Applicant[]>(
-    () => initialApplicants ?? generateApplicants({ referenceDate: DEMO_TODAY }),
+    () => initialApplicants ?? readBoard(seedBoard),
   );
   const [moveMessage, setMoveMessage] = useState<string | null>(null);
   const [pendingReject, setPendingReject] = useState<string | null>(null);
+  const [confirmReset, setConfirmReset] = useState(false);
+
+  function commit(next: Applicant[]) {
+    setApplicants(next);
+    writeBoard(next);
+  }
 
   useEffect(() => applyTheme(theme), [theme]);
   useEffect(
@@ -64,7 +74,10 @@ export function App({ now = DEMO_TODAY, initialApplicants }: AppProps) {
   function applyMove(id: string, to: Stage, reason?: string) {
     const current = applicants.find((row) => row.id === id);
     if (!current) return;
-    const result = moveApplicant(current, reason === undefined ? { to, at: now } : { to, at: now, reason });
+    const result = moveApplicant(
+      current,
+      reason === undefined ? { to, at: now } : { to, at: now, reason },
+    );
     if (!result.ok) {
       if (result.error === "rejected-needs-reason") {
         setPendingReject(id);
@@ -75,7 +88,7 @@ export function App({ now = DEMO_TODAY, initialApplicants }: AppProps) {
       setMoveMessage(strings.moveError[error]);
       return;
     }
-    setApplicants((list) => replaceApplicant(list, result.applicant));
+    commit(replaceApplicant(applicants, result.applicant));
     setMoveMessage(null);
     setPendingReject(null);
   }
@@ -103,6 +116,9 @@ export function App({ now = DEMO_TODAY, initialApplicants }: AppProps) {
             reducedMotion={reducedMotion}
             strings={strings}
           />
+          <button type="button" className="button" onClick={() => setConfirmReset(true)}>
+            {strings.resetDemo}
+          </button>
         </div>
       </header>
       <main id="main" className="app-main" tabIndex={-1}>
@@ -115,6 +131,21 @@ export function App({ now = DEMO_TODAY, initialApplicants }: AppProps) {
         )}
         <Board applicants={applicants} now={now} strings={strings} onMove={applyMove} />
       </main>
+      {confirmReset && (
+        <ConfirmDialog
+          title={strings.resetTitle}
+          body={strings.resetBody}
+          confirmLabel={strings.resetConfirm}
+          cancelLabel={strings.resetCancel}
+          onCancel={() => setConfirmReset(false)}
+          onConfirm={() => {
+            commit(seedBoard());
+            setConfirmReset(false);
+            setMoveMessage(null);
+            setPendingReject(null);
+          }}
+        />
+      )}
       {pending && (
         <ReasonDialog
           name={pending.name}

@@ -32,6 +32,11 @@ export interface UIStrings {
   rejectReasonLabel: string;
   rejectConfirm: string;
   rejectCancel: string;
+  resetDemo: string;
+  resetTitle: string;
+  resetBody: string;
+  resetConfirm: string;
+  resetCancel: string;
 }
 
 export const COMPANY = "Demo Talent GmbH";
@@ -80,6 +85,12 @@ export const STRINGS: Record<LocaleName, UIStrings> = {
     rejectReasonLabel: "Reason",
     rejectConfirm: "Reject",
     rejectCancel: "Cancel",
+    resetDemo: "Reset demo",
+    resetTitle: "Reset the demo board?",
+    resetBody:
+      "This replaces the current board with the original seeded applicants. It cannot be undone.",
+    resetConfirm: "Reset",
+    resetCancel: "Cancel",
   },
   de: {
     skipToContent: "Zum Inhalt springen",
@@ -124,5 +135,11 @@ export const STRINGS: Record<LocaleName, UIStrings> = {
     rejectReasonLabel: "Grund",
     rejectConfirm: "Ablehnen",
     rejectCancel: "Abbrechen",
+    resetDemo: "Demo zurücksetzen",
+    resetTitle: "Demo-Board zurücksetzen?",
+    resetBody:
+      "Das aktuelle Board wird durch die ursprünglichen Demodaten ersetzt. Das lässt sich nicht rückgängig machen.",
+    resetConfirm: "Zurücksetzen",
+    resetCancel: "Abbrechen",
   },
 };
